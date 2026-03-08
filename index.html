@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Catch It All! — Generalizable Dynamic Catching with a Dexterous Hand</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --cream:     #f5f1ea;
+      --ink:       #1a1612;
+      --rust:      #c0450a;
+      --steel:     #4a6fa5;
+      --sage:      #5a7a5c;
+      --warm-gray: #8a8278;
+      --rule:      1px solid #ccc8c0;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--cream);
+      color: var(--ink);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 16px;
+      line-height: 1.7;
+    }
+
+    /* ── Header ───────────────────────────────────────────── */
+    header {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 72px 24px 40px;
+      border-bottom: var(--rule);
+    }
+    .tag {
+      display: inline-block;
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--rust);
+      margin-bottom: 20px;
+    }
+    h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      line-height: 1.12;
+      letter-spacing: -.01em;
+      max-width: 780px;
+      margin-bottom: 32px;
+    }
+    h1 em { font-style: italic; color: var(--rust); }
+    .authors {
+      font-family: 'DM Mono', monospace;
+      font-size: 13px;
+      color: var(--warm-gray);
+      letter-spacing: .04em;
+      margin-bottom: 28px;
+    }
+    .links { display: flex; gap: 12px; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 18px;
+      border: 1.5px solid var(--ink);
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--ink);
+      background: transparent;
+      cursor: pointer;
+      transition: background .15s, color .15s;
+    }
+    .btn:hover { background: var(--ink); color: var(--cream); }
+    .btn.primary { background: var(--rust); color: var(--cream); border-color: var(--rust); }
+    .btn.primary:hover { background: #a03808; border-color: #a03808; }
+
+    /* ── Layout ───────────────────────────────────────────── */
+    main { max-width: 860px; margin: 0 auto; padding: 0 24px 80px; }
+    section { padding: 56px 0; border-bottom: var(--rule); }
+    section:last-child { border-bottom: none; }
+    h2 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.6rem;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    h2 .num {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--rust);
+      letter-spacing: .1em;
+      border: 1.5px solid var(--rust);
+      padding: 2px 7px;
+      border-radius: 2px;
+    }
+    p { max-width: 700px; margin-bottom: 16px; color: #2c2820; font-weight: 300; }
+    p:last-child { margin-bottom: 0; }
+
+    /* ── Abstract ─────────────────────────────────────────── */
+    .abstract-body {
+      border-left: 3px solid var(--rust);
+      padding-left: 20px;
+      margin-top: 8px;
+    }
+
+    /* ── Stats ────────────────────────────────────────────── */
+    .stat-row {
+      display: flex;
+      gap: 32px;
+      flex-wrap: wrap;
+      margin: 36px 0 4px;
+      padding: 24px;
+      background: #ece8e0;
+      border: var(--rule);
+    }
+    .stat { display: flex; flex-direction: column; }
+    .stat-val {
+      font-family: 'DM Serif Display', serif;
+      font-size: 2.2rem;
+      color: var(--rust);
+      line-height: 1;
+    }
+    .stat-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      color: var(--warm-gray);
+      margin-top: 5px;
+    }
+
+    /* ── Contributions ────────────────────────────────────── */
+    .contrib-list { margin-top: 20px; list-style: none; max-width: 700px; }
+    .contrib-list li {
+      display: flex;
+      gap: 16px;
+      padding: 16px 0;
+      border-top: var(--rule);
+      font-weight: 300;
+      color: #2c2820;
+    }
+    .contrib-list li:last-child { border-bottom: var(--rule); }
+    .contrib-list .ci {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--rust);
+      flex-shrink: 0;
+      padding-top: 4px;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+    }
+    .contrib-list strong {
+      display: block;
+      font-weight: 500;
+      margin-bottom: 4px;
+      font-size: 0.95rem;
+      color: var(--ink);
+    }
+
+    /* ── Egocentric banner ────────────────────────────────── */
+    .ego-banner {
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
+      background: #1a1612;
+      color: var(--cream);
+      padding: 20px 22px;
+      margin-top: 28px;
+      border: 2px solid var(--ink);
+    }
+    .ego-icon {
+      font-size: 1.6rem;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .ego-text-block {}
+    .ego-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--rust);
+      margin-bottom: 4px;
+    }
+    .ego-desc {
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 1.55;
+      color: #ccc8c0;
+      max-width: 560px;
+      margin: 0;
+    }
+
+    /* ── Video grid ───────────────────────────────────────── */
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 16px;
+      margin-top: 28px;
+    }
+    .video-card {
+      background: #ece8e0;
+      border: var(--rule);
+      overflow: hidden;
+      transition: box-shadow .2s;
+    }
+    .video-card:hover { box-shadow: 0 4px 20px rgba(26,22,18,.12); }
+    .video-card video {
+      width: 100%;
+      display: block;
+      aspect-ratio: 4/3;
+      object-fit: cover;
+      background: #1a1612;
+    }
+    .video-label {
+      padding: 8px 12px;
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: .05em;
+      color: var(--warm-gray);
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; display: inline-block; }
+    .dot-success { background: var(--sage); }
+    .dot-fail    { background: var(--rust); }
+    .dot-adapt   { background: var(--steel); }
+    .dot-ego     { background: #e8c87a; }
+
+    /* ── Results table ────────────────────────────────────── */
+    .results-table {
+      width: 100%;
+      max-width: 480px;
+      border-collapse: collapse;
+      margin-top: 32px;
+      font-size: 14px;
+    }
+    .results-table th {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      color: var(--warm-gray);
+      border-bottom: 2px solid var(--ink);
+      padding: 8px 12px;
+      text-align: left;
+    }
+    .results-table td {
+      padding: 8px 12px;
+      border-bottom: var(--rule);
+      font-weight: 300;
+    }
+    .results-table tr.avg td {
+      border-top: 2px solid var(--ink);
+      border-bottom: none;
+      font-weight: 500;
+    }
+    .hi { color: var(--sage); font-weight: 500; }
+    .lo { color: var(--rust); }
+
+    /* ── Showcase video ───────────────────────────────────── */
+    .video-showcase {
+      margin-top: 28px;
+      border: var(--rule);
+      background: #ece8e0;
+      overflow: hidden;
+    }
+    .video-showcase video {
+      width: 100%;
+      display: block;
+      max-height: 480px;
+      object-fit: cover;
+      background: #1a1612;
+    }
+    .showcase-label {
+      padding: 12px 18px;
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: .06em;
+      color: var(--warm-gray);
+      text-transform: uppercase;
+      border-top: var(--rule);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* ── Ego showcase (dark) ──────────────────────────────── */
+    .video-showcase.ego-showcase {
+      border: 2px solid var(--ink);
+      background: #1a1612;
+    }
+    .video-showcase.ego-showcase .showcase-label {
+      background: #1a1612;
+      color: #8a8278;
+      border-top: 1px solid #333;
+    }
+
+    /* ── Footer ───────────────────────────────────────────── */
+    footer {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 24px;
+      border-top: var(--rule);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    footer .foot-text {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--warm-gray);
+      letter-spacing: .04em;
+    }
+
+    /* ── Animations ───────────────────────────────────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    header { animation: fadeUp .5s ease both; }
+    section { animation: fadeUp .5s ease both; }
+    section:nth-of-type(1) { animation-delay: .05s; }
+    section:nth-of-type(2) { animation-delay: .10s; }
+    section:nth-of-type(3) { animation-delay: .15s; }
+    section:nth-of-type(4) { animation-delay: .20s; }
+    section:nth-of-type(5) { animation-delay: .25s; }
+    section:nth-of-type(6) { animation-delay: .30s; }
+  </style>
+</head>
+<body>
+
+<!-- ── HEADER ───────────────────────────────────────────────────── -->
+<header>
+  <div class="tag">Robotics &amp; Dexterous Manipulation · IROS 2026 Submission</div>
+  <h1><em>Catch It All!</em>: Generalizable Dynamic Catching<br>with a Dexterous Hand</h1>
+  <div class="authors">Anonymous Authors</div>
+</header>
+
+<!-- ── MAIN ─────────────────────────────────────────────────────── -->
+<main>
+
+  <!-- §01 Abstract -->
+  <section id="abstract">
+    <h2><span class="num">§01</span> Abstract</h2>
+    <div class="abstract-body">
+      <p>
+        Catching arbitrary objects requires robots to adapt in real-time to changing visual
+        observations, unseen object properties, and diverse contact dynamics. This paper presents
+        <em>Catch It All!</em>, an autonomous catching framework for humanoid robots that solves
+        this problem <strong>without motion capture or teleoperation</strong>.
+      </p>
+      <p>
+        <em>Catch It All!</em> develops a generalizable, egocentric control pipeline at 50 Hz
+        alongside a safety-aware sim-to-real curriculum allowing real-time catching of novel
+        objects. The policy is trained entirely in simulation using safety-aware curricula that
+        ensure safe behavior near torque limits and avoid self-collision. The resulting policy is
+        deployed <strong>zero-shot</strong> on a Unitree G1 humanoid robot without any fine-tuning.
+      </p>
+      <p>
+        We evaluate across 11 novel objects spanning wide variation in size, shape, toss ranges,
+        mass, and restitution, achieving strong catch success rates in both simulation and
+        real-world experiments.
+      </p>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat">
+        <span class="stat-val">40.9%</span>
+        <span class="stat-label">Real-world catch rate</span>
+      </div>
+      <div class="stat">
+        <span class="stat-val">11</span>
+        <span class="stat-label">Novel test objects</span>
+      </div>
+      <div class="stat">
+        <span class="stat-val">50 Hz</span>
+        <span class="stat-label">Control frequency</span>
+      </div>
+      <div class="stat">
+        <span class="stat-val">2.75 m</span>
+        <span class="stat-label">Max toss distance</span>
+      </div>
+      <div class="stat">
+        <span class="stat-val">&lt;20 ms</span>
+        <span class="stat-label">Perception latency</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- §02 Contributions -->
+  <section id="contributions">
+    <h2><span class="num">§02</span> Contributions</h2>
+    <ul class="contrib-list">
+      <li>
+        <span class="ci">C1</span>
+        <div>
+          <strong>Generalizing across objects, tosses, and physical properties</strong>
+          We design rewards and training curricula that yield policies capable of catching objects
+          unseen during training, spanning diverse shapes, sizes, masses, and restitution
+          coefficients. Toss conditions are similarly varied: trajectories range from 1.0–2.75 m,
+          include angled and lateral tosses (including behind-the-robot side catches), paired with
+          randomized time-to-impact from 0.4–5.0 s and object angular velocities up to ±25 rad/s
+          for small objects. This breadth of training conditions enables our policy to handle the
+          full diversity of real-world throwing scenarios without any object- or toss-specific
+          tuning, achieving non-trivial catching performance on 10 out of 11 unseen real-world objects.
+        </div>
+      </li>
+      <li>
+        <span class="ci">C2</span>
+        <div>
+          <strong>Safe policy training via progressive curricula</strong>
+          We introduce a joint reward-penalty and torque clipping curriculum that balances
+          exploration early in training with strict safety enforcement as the policy matures,
+          yielding catching behaviors that respect hardware constraints — including wrist torque
+          limits as low as 5 N·m — without sacrificing performance.
+        </div>
+      </li>
+      <li>
+        <span class="ci">C3</span>
+        <div>
+          <strong>Zero-shot sim-to-real transfer without fine-tuning</strong>
+          By distilling a privileged teacher policy trained on ground-truth state into an
+          egocentric student operating from noisy camera observations, combined with extensive
+          domain randomization, our policy transfers directly to a real Unitree G1 humanoid.
+          Sim and real performance trends are closely matched across object categories,
+          validating simulation as a reliable proxy for real-world evaluation. A human-teleoperated
+          baseline achieved only 6.8% success across the same 44 tosses, underscoring both the
+          task difficulty and the strength of our autonomous approach.
+        </div>
+      </li>
+    </ul>
+  </section>
+
+  <!-- §03 Egocentric Perspective -->
+  <section id="egocentric">
+    <h2><span class="num">§03</span> Egocentric Perspective</h2>
+    <p>
+      All perception in our system is purely egocentric — the robot sees the world only through
+      an overhead ZED2i stereo camera mounted 0.3 m above the neck at a −45° angle. There is
+      no external motion capture, no third-person tracking, and no privileged state at test time.
+      The video below is captured directly from this onboard camera and represents the robot's
+      actual visual input during catching trials.
+    </p>
+
+    <div class="ego-banner">
+      <div class="ego-icon">👁</div>
+      <div class="ego-text-block">
+        <div class="ego-label">Robot's point of view</div>
+        <p class="ego-desc">
+          This footage is recorded from the robot's own egocentric camera — exactly what the
+          policy sees. SAM2 runs on this stream at up to 50 Hz to produce 2D bounding boxes,
+          which are projected into 3D via stereo depth. No external cameras or motion capture
+          systems are used at any point during deployment.
+        </p>
+      </div>
+    </div>
+
+    <div class="video-showcase ego-showcase" style="margin-top: 20px;">
+      <video src="video/ego_1.mp4" controls muted loop playsinline></video>
+      <div class="showcase-label">
+        <span class="dot dot-ego"></span>
+        Egocentric camera feed — onboard ZED2i · robot's actual visual input
+      </div>
+    </div>
+  </section>
+
+  <!-- §04 Successes -->
+  <section id="successes">
+    <h2><span class="num">§04</span> Results — Successes</h2>
+    <p>
+      Each clip below shows a successful catch from our real-world evaluation on a Unitree G1
+      humanoid equipped with a custom 20-DoF, five-fingered House of Dextra hand. Objects were
+      thrown by a human from 1.0–2.75 m at randomly selected distances. The same zero-shot
+      deployed DAgger student policy is used for all catches — no object-specific tuning.
+      Despite limited information on object geometry, the policy consistently achieves 4–5 finger grasps.
+    </p>
+
+    <div class="video-grid">
+      <div class="video-card">
+        <video src="video/blue_ball.mp4" autoplay muted loop playsinline></video>
+        <div class="video-label"><span>Spiky Ball</span><span class="dot dot-success"></span></div>
+      </div>
+      <div class="video-card">
+        <video src="video/pink_ball.mp4" autoplay muted loop playsinline></video>
+        <div class="video-label"><span>Pink Star</span><span class="dot dot-success"></span></div>
+      </div>
+      <div class="video-card">
+        <video src="video/orange_block.mp4" autoplay muted loop playsinline></video>
+        <div class="video-label"><span>Orange Block</span><span class="dot dot-success"></span></div>
+      </div>
+      <div class="video-card">
+        <video src="video/green_ellipse.mp4" autoplay muted loop playsinline></video>
+        <div class="video-label"><span>Green Ellipsoid</span><span class="dot dot-success"></span></div>
+      </div>
+      <div class="video-card">
+        <video src="video/purp_hex.mp4" autoplay muted loop playsinline></video>
+        <div class="video-label"><span>Purple Polygon</span><span class="dot dot-success"></span></div>
+      </div>
+      <div class="video-card">
+        <video src="video/yellow_sac.mp4" autoplay muted loop playsinline></video>
+        <div class="video-label"><span>Yellow Sandbag</span><span class="dot dot-success"></span></div>
+      </div>
+      <div class="video-card">
+        <video src="video/pineapple.mp4" autoplay muted loop playsinline></video>
+        <div class="video-label"><span>Pineapple</span><span class="dot dot-success"></span></div>
+      </div>
+      <div class="video-card">
+        <video src="video/panda.mp4" autoplay muted loop playsinline></video>
+        <div class="video-label"><span>Panda</span><span class="dot dot-success"></span></div>
+      </div>
+      <div class="video-card">
+        <video src="video/octo.mp4" autoplay muted loop playsinline></video>
+        <div class="video-label"><span>Octopus</span><span class="dot dot-success"></span></div>
+      </div>
+    </div>
+
+    <table class="results-table">
+      <thead>
+        <tr>
+          <th>Object</th>
+          <th>Palm Contact ↑</th>
+          <th>Catch Success ↑</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Pink Star</td>       <td>75%</td>            <td class="hi">50%</td></tr>
+        <tr><td>Orange Block</td>    <td>50%</td>            <td class="hi">50%</td></tr>
+        <tr><td>Green Ellipsoid</td> <td>50%</td>            <td class="hi">50%</td></tr>
+        <tr><td>Purple Polygon</td>  <td>75%</td>            <td class="hi">50%</td></tr>
+        <tr><td>Yellow Sandbag</td>  <td class="hi">100%</td><td class="hi">50%</td></tr>
+        <tr><td>Strawberry</td>      <td>25%</td>            <td>25%</td></tr>
+        <tr><td>Pineapple</td>       <td>75%</td>            <td class="hi">50%</td></tr>
+        <tr><td>Panda</td>           <td>50%</td>            <td>25%</td></tr>
+        <tr><td>Turtle</td>          <td>25%</td>            <td class="lo">0%</td></tr>
+        <tr><td>Octopus</td>         <td>50%</td>            <td class="hi">50%</td></tr>
+        <tr><td>Spiky Ball</td>      <td>50%</td>            <td class="hi">50%</td></tr>
+        <tr class="avg">
+          <td>Average</td>
+          <td>56.8%</td>
+          <td>40.9%</td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="margin-top:10px; font-family:'DM Mono',monospace; font-size:11px; color:var(--warm-gray);">
+      4 trials per object · 44 total tosses · 1 long (&gt;2.0 m), 2 medium (1.45–2.0 m), 1 short (1.0–1.45 m)
+    </p>
+  </section>
+
+  <!-- §05 Failures -->
+  <section id="failures">
+    <h2><span class="num">§05</span> Results — Failures</h2>
+    <p>
+      We include representative failure cases for transparency. The majority of failures arose
+      from two primary sources. First, SAM2 lost track of the projectile during flight and failed
+      to reacquire it, resulting in degraded object state estimates — particularly pronounced for
+      objects with ambiguous visual features (multi-colored, dark-colored, or texturally complex
+      objects such as the toy turtle; the yellow bear resulted in no successful detection and was
+      excluded from the main evaluation).
+    </p>
+    <p>
+      Second, rapid arm extension induced compensatory whole-body displacement, causing the torso
+      and camera frame to shift forward and rebound. This introduced systematic error in
+      camera-relative position estimates, exceeding the 5 cm localization threshold. This is a
+      known limitation of operating without a lower-body stabilization controller; future work
+      should incorporate a standing balance controller to decouple arm dynamics from base motion.
+      A third, less prevalent failure mode was system latency, occasionally resulting in near-miss catches.
+    </p>
+
+    <div class="video-showcase">
+      <video src="video/failure.mp4" controls muted loop playsinline></video>
+      <div class="showcase-label">
+        <span class="dot dot-fail"></span>
+        Failure cases — real-world evaluation set
+      </div>
+    </div>
+  </section>
+
+  <!-- §06 Adaptation -->
+  <section id="adaptation">
+    <h2><span class="num">§06</span> Results — Adaptation</h2>
+    <p>
+      We highlight the policy's reactivity after imperfect initial contact. In one representative
+      qualitative example, the Pink Star projectile hits the palm of the robot hand, rebounds to
+      the torso, and the robot then catches it on the rebound off the body. This reactive behavior
+      emerges from the closed-loop 50 Hz egocentric control pipeline — not from any explicit
+      rebound recovery reward — and demonstrates that the learned policy generalizes well beyond
+      clean first-contact catches.
+    </p>
+    <p>
+      The egocentric student policy operates from a 50-step history buffer of noisy 3D object
+      positions (±5 cm noise; ±7.5 cm near the hand), robot proprioception for the 7-DoF arm
+      and 20-DoF hand, and 3D bounding box dimensions. Perception latency is kept below 20 ms
+      by running SAM2 Hiera Tiny on parallel threads on a single workstation (Ryzen 5 5600X + RTX 4090).
+    </p>
+
+    <div class="video-showcase">
+      <video src="video/adaptation.mp4" controls muted loop playsinline></video>
+      <div class="showcase-label">
+        <span class="dot dot-adapt"></span>
+        Adaptation — mid-flight correction &amp; rebound recovery
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ── FOOTER ────────────────────────────────────────────────────── -->
+<footer>
+  <span class="foot-text">Catch It All! · Anonymous Submission · IROS 2026</span>
+  <span class="foot-text">Under review — do not distribute</span>
+</footer>
+
+</body>
+</html>
